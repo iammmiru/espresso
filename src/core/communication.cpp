@@ -963,7 +963,7 @@ void mpi_send_virtual_slave(int pnode, int part) {
 /********************* REQ_SET_BOND ********/
 
 void mpi_send_vs_relative(int pnode, int part, int vs_relative_to,
-                          double vs_distance, double *rel_ori, double* vs_quat) {
+                          double vs_distance, double *rel_ori, double* vs_theta) {
 #ifdef VIRTUAL_SITES_RELATIVE
   mpi_call(mpi_send_vs_relative_slave, pnode, part);
 
@@ -973,15 +973,15 @@ void mpi_send_vs_relative(int pnode, int part, int vs_relative_to,
     Particle *p = local_particles[part];
     p->p.vs_relative_to_particle_id = vs_relative_to;
     p->p.vs_relative_distance = vs_distance;
+    p->p.vs_virtual_site_theta = vs_theta;
     for (int i = 0; i < 4; i++) {
       p->p.vs_relative_rel_orientation[i] = rel_ori[i];
-      p->p.vs_virtual_site_quaternion[i] = vs_quat[i];
     }
   } else {
     MPI_Send(&vs_relative_to, 1, MPI_INT, pnode, SOME_TAG, comm_cart);
     MPI_Send(&vs_distance, 1, MPI_DOUBLE, pnode, SOME_TAG, comm_cart);
     MPI_Send(rel_ori, 4, MPI_DOUBLE, pnode, SOME_TAG, comm_cart);
-    MPI_Send(vs_quat, 4, MPI_DOUBLE, pnode, SOME_TAG, comm_cart);
+    MPI_Send(vs_theta, 1, MPI_DOUBLE, pnode, SOME_TAG, comm_cart);
   }
 
   on_particle_change();
@@ -998,7 +998,7 @@ void mpi_send_vs_relative_slave(int pnode, int part) {
              MPI_STATUS_IGNORE);
     MPI_Recv(p->p.vs_relative_rel_orientation, 4, MPI_DOUBLE, 0, SOME_TAG,
              comm_cart, MPI_STATUS_IGNORE);
-    MPI_Recv(p->p.vs_virtual_site_quaternion, 4, MPI_DOUBLE, 0, SOME_TAG,
+    MPI_Recv(p->p.vs_virtual_site_theta, 1, MPI_DOUBLE, 0, SOME_TAG,
              comm_cart, MPI_STATUS_IGNORE);
   }
 

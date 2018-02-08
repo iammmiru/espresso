@@ -77,6 +77,32 @@ inline void convert_quat_to_quatu(double quat[4], double quatu[3]) {
               quat[3] * quat[3]);
 }
 
+inline void calculate_relative_orientation(double quat[4] double vector_v[3],
+                                double thate, double quatu[3]) {
+  /* director_ori */
+  // Calculate a new director rotated by a quaternion
+  // whose reference vector is v with an angle theta
+  double vector_u[3];
+  vector_u[0] = vector_v[1];
+  vector_u[1] = -vector_v[0];
+  vector_u[2] = 0;
+
+  quat[0]     = cos(theta/2.0);
+  quat[1]     = vector_u[0] * sin(theta/2.0);
+  quat[2]     = vector_u[1] * sin(theta/2.0);
+  quat[3]     = vector_u[2] * sin(theta/2.0);
+
+  quatu[0] = (quat[0]**2 * vector_v[0]) * vector_v[0]
+            + 2*quat[1]*(quat[1]*vector_v[0] + quat[2]*vector_v[1] + quat[3]*vector_v[2])
+            + 2*quat[0]*(quat[2]*vector[2] - quat[3]*vector_v[1]);
+  quatu[1] = (quat[0]**2 * vector_v[0]) * vector_v[1]
+            + 2*quat[2]*(quat[1]*vector_v[0] + quat[2]*vector_v[1] + quat[3]*vector_v[2])
+            - 2*quat[0]*(quat[1]*vector[2] - quat[3]*vector_v[0]);
+  quatu[2] = (quat[0]**2 * vector_v[0]) * vector_v[2]
+            + 2*quat[3]*(quat[1]*vector_v[0] + quat[2]*vector_v[1] + quat[3]*vector_v[2])
+            + 2*quat[0]*(quat[1]*vector[1] - quat[2]*vector_v[0]);
+}
+
 /** Multiply two quaternions */ 
 inline void multiply_quaternions(const double a[4], const double b[4], double result[4])
 {

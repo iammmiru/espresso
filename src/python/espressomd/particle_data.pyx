@@ -692,18 +692,24 @@ cdef class ParticleHandle(object):
             """
 
             def __set__(self, x):
-                if len(x) != 3:
+                if len(x) < 3:
                     raise ValueError(
                         "vs_relative needs input like id,distance,(q1,q2,q3,q4).")
                 _relto = x[0]
                 _dist = x[1]
                 q = x[2]
+                cdef double _ori_q[4]
                 cdef double _q[4]
                 for i in range(4):
                     _q[i] = q[i]
+                    _ori_q[i] = 0
+                if len(x) == 4:
+                    ori_q = x[3]
+                    for i in range(4):
+                        _ori_q[i] = ori_q[i]
 
                 if is_valid_type(_relto, int) and is_valid_type(_dist, float) and all(is_valid_type(fq,float) for fq in q):
-                    if set_particle_vs_relative(self.id, _relto, _dist, _q) == 1:
+                    if set_particle_vs_relative(self.id, _relto, _dist, _q, _ori_q) == 1:
                         raise Exception("Set particle position first.")
                 else:
                     raise ValueError(
@@ -714,10 +720,11 @@ cdef class ParticleHandle(object):
                 cdef const int * rel_to = NULL
                 cdef const double * dist = NULL
                 cdef const double * q = NULL
-                cdef const double * vs_q = NULL
+                cdef const double * vs_t = NULL
                 pointer_to_vs_relative(
-                    self.particle_data, rel_to, dist, q, vs_q)
-                return (rel_to[0], dist[0], np.array((q[0], q[1], q[2], q[3])), np.array([vs_q[0], vs_q[1], vs_q[2], vs_q[3]]))
+                    self.particle_data, rel_to, dist, q, vs_t)
+                return (rel_to[0], dist[0], np.array((q[0], q[1], q[2], q[3])),
+                        vs_t[0])
 
         # vs_auto_relate_to
         def vs_auto_relate_to(self, _relto):

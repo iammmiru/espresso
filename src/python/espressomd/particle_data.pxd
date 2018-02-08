@@ -209,7 +209,9 @@ cdef extern from "particle_data.hpp":
 cdef extern from "virtual_sites.hpp":
     IF VIRTUAL_SITES_RELATIVE == 1:
         int vs_relate_to(int part_num, int relate_to)
-        int set_particle_vs_relative(int part, int vs_relative_to, double vs_distance, double * vs_quat)
+        int set_particle_vs_relative(int part, int vs_relative_to, double
+                                     vs_distance, double * vs_quat, double *
+                                     vs_ori_quat)
 
 cdef extern from "rotation.hpp":
     void convert_omega_body_to_space(const particle * p, double * omega)

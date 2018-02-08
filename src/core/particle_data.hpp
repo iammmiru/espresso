@@ -155,7 +155,7 @@ struct ParticleProperties {
   // Store relative position of the virtual site
   double vs_relative_rel_orientation[4] = {0., 0., 0., 0};
   // Store the orientation of the virtual particle in the body fixed frame
-  double vs_virtual_site_quaternion[4] = {0., 0., 0., 0.};
+  double vs_virtual_site_theta = 0;
 #endif
 #endif
 
