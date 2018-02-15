@@ -77,12 +77,15 @@ inline void convert_quat_to_quatu(double quat[4], double quatu[3]) {
               quat[3] * quat[3]);
 }
 
-inline void calculate_relative_orientation(double quat[4] double vector_v[3],
-                                double thate, double quatu[3]) {
+inline void calculate_relative_orientation(double vector_v[3],
+                                double theta, double quatu[3]) {
   /* director_ori */
   // Calculate a new director rotated by a quaternion
   // whose reference vector is v with an angle theta
   double vector_u[3];
+  double quat[3];
+  // vector_u is the axis of the rotation which is the vector product of
+  // vector_v with [0, 0, 1].
   vector_u[0] = vector_v[1];
   vector_u[1] = -vector_v[0];
   vector_u[2] = 0;
